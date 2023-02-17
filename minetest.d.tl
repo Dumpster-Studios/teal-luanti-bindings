@@ -68,7 +68,6 @@ global enum EmergeAreaAction
   "EMERGE_GENERATED"
 end
 
-
 global record minetest
   CONTENT_UNKNOWN: number
   CONTENT_AIR: number
@@ -80,6 +79,7 @@ global record minetest
   EMERGE_GENERATED: EmergeAreaAction
 
   registered_items: {string: ItemDefinition}
+  registered_nodes: {string: ItemDefinition}
 end
 
 global record MetaDataRef
@@ -288,4 +288,331 @@ global record ObjectRef
   is_player: function(): boolean
   get_nametag_attributes: function(): ObjectRefGetNametagAttributes
   set_nametag_attributes: function(attributes: ObjectRefSetNametagAttributesArgs)
+end
+
+global enum DrawType
+  "normal"
+  "airlike"
+  "allfaces"
+  "allfaces_optional"
+  "glasslike"
+  "glasslike_framed"
+  "glasslike_framed_optional"
+  "liquid"
+  "flowingliquied"
+  "torchlike"
+  "signlike"
+  "plantlike"
+  "raillike"
+  "fencelike"
+  "firelike"
+  "nodebox"
+  "mesh"
+end
+
+local enum NodeDefinitionUseTextureAlpha
+  "opaque"
+  "clip"
+  "blend"
+end
+
+local enum NodeDefinitionParamType
+  "none"
+  "light"
+end
+
+local enum NodeDefinitionParamType2
+  "flowingliquid"
+  "wallmounted"
+  "facedir"
+  "4dir"
+  "leveled"
+  "degrotate"
+  "meshoptions"
+  "color"
+  "colorfacedir"
+  "color4dir"
+  "colorwallmounted"
+  "glasslikeliquidlevel"
+  "colordegrotate"
+  "none"
+end
+
+local enum TileAnimationDefinitionType
+  "vertical_frames"
+  "sheet_2d"
+end
+
+-- suppress pls
+local record TileAnimationDefinitionVerticalFrames
+  type: TileAnimationDefinitionType -- "vertical_frames"
+  aspect_w: number
+  aspect_h: number
+  length: number
+end
+
+-- suppress pls
+local record TileAnimationDefinitionSheet2D
+  type: TileAnimationDefinitionType -- "sheet_2d"
+  frames_w: number
+  frames_h: number
+  frame_length: number
+end
+
+local record TileAnimationDefinitionUnion
+  type: TileAnimationDefinitionType
+  aspect_w: number
+  aspect_h: number
+  length: number
+  frames_w: number
+  frames_h: number
+  frame_length: number
+end
+
+-- suppress pls
+local record TileDefinitionAnimated
+  name: string
+  animation: {TileAnimationDefinitionUnion}
+end
+
+local enum TileDefinitionAlignStyle
+  "world"
+  "node"
+  "user"
+end
+
+-- suppress pls
+local record TileDefinitionOther
+  name: string
+  backface_culling: boolean
+  align_style: TileDefinitionAlignStyle
+  scale: number
+end
+
+local record TileDefinitionUnion 
+  -- TileDefinitionAnimated
+  name: string
+  animation: {TileAnimationDefinitionUnion}
+  -- TileDefinitionOther
+  backface_culling: boolean
+  align_style: TileDefinitionAlignStyle
+  scale: number
+end
+
+global type TileDefinition = string | TileDefinitionUnion
+
+global record DropDefinition
+  items: {Item}
+  rarity: number
+  tools: {string}
+end
+
+-- suppress pls
+local record NodeDefinitionDrop
+  items: {DropDefinition}
+  max_items: number
+end
+
+local enum NodeDefinitionLiquidType
+  "none"
+  "source"
+  "flowing"
+end
+
+local record SimpleSoundSpecRecord
+  name: string
+  gain: number
+  pitch: number
+end
+
+global type SimpleSoundSpec = SimpleSoundSpecRecord | string
+
+local record NodeDefinitionSounds
+  footstep: SimpleSoundSpec | nil
+  dug: SimpleSoundSpec | nil
+  dug_deep: SimpleSoundSpec | nil
+end
+
+global enum NodeBoxType
+  "regular"
+  "fixed"
+  "connected"
+end
+
+global type Box = {number}
+
+global record NodeBoxRegular 
+  type: NodeBoxType -- "regular"
+end
+
+global record NodeBoxFixed
+  type: NodeBoxType -- "fixed"
+  -- technically: Box | {Box}
+  fixed: any | {Box}
+end
+
+global record NodeBoxConnected
+  type: NodeBoxType -- "connected"
+  -- technically: Box | {Box}
+  fixed: any | {Box}
+  -- technically: Box | {Box}
+  connect_top: any | {Box}
+  -- technically: Box | {Box}
+  connect_bottom: any | {Box}
+  -- technically: Box | {Box}
+  connect_front: any | {Box}
+  -- technically: Box | {Box}
+  connect_left: any | {Box}
+  -- technically: Box | {Box}
+  connect_right: any | {Box}
+  -- technically: Box | {Box}
+  connect_back: any | {Box}
+end
+
+-- technically: NodeBoxRegular | NodeBoxFixed | NodeBoxConnected
+global type NodeBox = any
+
+global record NodeDefinition
+  drawtype: DrawType
+  visual_scale: number | nil
+  -- should technically have lengths of 1, 2, or 6 
+  tiles: {TileDefinition}
+  special_tiles: {string} | nil
+  use_texture_alpha: NodeDefinitionUseTextureAlpha | nil
+  alpha: number | nil
+  post_effect_color: ColorSpec | nil
+  -- technically array of length 3 is only allowed
+  inventory_image: string | {string} | nil
+  
+  -- technically array of length 3 is only allowed
+  wield_image: string | {string} | nil
+  paramtype: NodeDefinitionParamType | nil
+  paramtype2: NodeDefinitionParamType2 | nil
+  is_ground_content: boolean | nil
+  sunlight_propagates: boolean | nil
+  walkable: boolean | nil
+  pointable: boolean | nil
+  diggable: boolean | nil
+  climbable: boolean | nil
+  buildable_to: boolean | nil
+  groups: { string: number } | nil
+
+  -- technically it should be Item | {Item} | NodeDefinitionDrop | nil
+  drop: Item | {Item} | any | nil
+  stack_max: number | nil
+  liquidtype: NodeDefinitionLiquidType | nil
+  liquid_alternative_flowing: any | nil
+  liquid_alternative_source: any | nil
+  liquid_viscosity: number | nil
+  liquid_renewable: boolean | nil
+  light_source: number | nil
+  damage_per_second: number | nil
+  node_box: NodeBox | nil
+  selection_box: NodeBox | nil
+  collision_box: NodeBox | nil
+  sounds: NodeDefinitionSounds | nil
+  on_construct: nil | function(pos: Vector3D): nil
+  on_destruct: nil | function(pos: Vector3D): nil
+  after_destruct: nil | function(pos: Vector3D, oldnode: Node): nil
+  on_place: nil | function(
+    item: ItemStack,
+    placer: ObjectRef,
+    pos: Vector3D,
+    pointedthing: PointedNode
+  ): nil
+  on_drop: nil | function(item: ItemStack, dropper: ObjectRef, pos: Vector3D): nil
+  on_use: nil | function(
+    item: ItemStack,
+    player: ObjectRef,
+    pointedthing: PointedNode
+  ): nil
+  on_punch: nil | function(
+    item: ItemStack,
+    node: Node,
+    player: ObjectRef,
+    pointedthing: PointedNode
+  ): nil
+  on_dig: nil | function(pos: Vector3D, node: Node, player: ObjectRef): nil
+  on_timer: nil | function(pos: Vector3D, elapsed: number): nil
+  on_receive_fields: nil | function(
+    pos: Vector3D,
+    formname: any,
+    fields: { string: any },
+    sender: PlayerObject
+  ): nil
+  allow_metadata_inventory_move: nil | function(
+    pos: Vector3D,
+    from_list: string,
+    from_index: number,
+    to_list: string,
+    to_index: number,
+    count: number,
+    player: PlayerObject
+  ): nil
+  allow_metadata_inventory_put: nil | function(
+    pos: Vector3D,
+    listname: string,
+    index: number,
+    stack: ItemStack,
+    player: PlayerObject
+  ): nil
+  allow_metadta_inventory_take: nil | function(
+    pos: Vector3D,
+    listname: string,
+    index: number,
+    stack: ItemStack,
+    player: PlayerObject
+  ): nil
+  on_metadata_inventory_move: nil | function(
+    pos: Vector3D,
+    from_list: string,
+    from_index: number,
+    to_list: string,
+    to_index: number,
+    count: number,
+    player: PlayerObject
+  ): nil
+  on_metadata_inventory_put: nil | function(
+    pos: Vector3D,
+    listname: string,
+    index: number,
+    stack: ItemStack,
+    player: PlayerObject
+  ): nil
+  on_metadta_inventory_take: nil | function(
+    pos: Vector3D,
+    listname: string,
+    index: number,
+    stack: ItemStack,
+    player: PlayerObject
+  ): nil
+
+  after_place_node: nil | function(
+    pos: Vector3D,
+    placer: ObjectRef | nil,
+    itemstack: ItemStack,
+    pointed_thing: PointedNode
+  ): boolean | nil
+  can_dig: nil | function(pos: Vector3D, player: PlayerObject): nil
+  after_dig_node: nil | function(
+    pos: Vector3D,
+    oldnode: Node,
+    old_meta: MetaDataRef,
+    digger: ObjectRef
+  ): nil
+  on_rightclick: nil | function(
+    pos: Vector3D,
+    node: Node,
+    player: PlayerObject,
+    stack: ItemStack,
+    pointed: PointedNode
+  ): nil
+
+  on_blast: nil | function(pos: Vector3D, intensity: number | nil): nil
+end
+
+
+-- @todo: fill this out
+global record PlayerObject
+
 end
