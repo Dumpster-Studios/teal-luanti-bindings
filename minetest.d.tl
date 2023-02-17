@@ -1,4 +1,4 @@
-global dump : function(obj: any, indent : number | nil): string
+global dump: function(obj: any, indent : number | nil): string
 
 global dump2: function(obj: any): string
 
@@ -83,14 +83,14 @@ global record minetest
 end
 
 global record MetaDataRef
-  contains: function(string): boolean | nil
-  get: function(string): string | nil
-  set_string: function(string, string): string
-  get_string: function(string): string
-  set_int: function(string, number): nil
-  get_int: function(string): number
-  set_float: function(string, number): nil
-  get_float: function(string): number
+  contains: function(key: string): boolean | nil
+  get: function(key: string): string | nil
+  set_string: function(key: string, value: string): string
+  get_string: function(key: string): string
+  set_int: function(key: string, value: number): nil
+  get_int: function(key: string): number
+  set_float: function(key: string, value: number): nil
+  get_float: function(key: string): number
 end
 
 global record ItemDefinition
@@ -173,8 +173,8 @@ global record ObjectProperties
   eye_height: number | nil
   physical: boolean | nil
   collide_with_objects: boolean | nil
-  collisionbox: {number, number, number, number, number, number} | nil
-  selectionbox: {number, number, number, number, number, number} | nil
+  collisionbox: {number} | nil
+  selectionbox: {number} | nil
   pointable: boolean | nil
   visual: ObjectPropertiesVisual | nil
   visual_size: Vector3D | nil
@@ -204,21 +204,21 @@ global record ObjectProperties
 end
 
 global record InvRef 
-  is_empty: function(string): boolean
-  get_size: function(string): number
-  set_size: function(string, number): nil
-  get_width: function(string): number
-  set_width: function(string, number): nil
-  get_stack: function(string, number): ItemStack
-  set_stack: function(string, number, Item): nil
-  get_list: function(string): {ItemStack}
-  set_list: function(string, {Item}): nil
+  is_empty: function(listname: string): boolean
+  get_size: function(listname: string): number
+  set_size: function(listname: string, size: number): nil
+  get_width: function(listname: string): number
+  set_width: function(listname: string, width: number): nil
+  get_stack: function(listname: string, index: number): ItemStack
+  set_stack: function(listname: string, index: number, stack: Item): nil
+  get_list: function(listname: string): {ItemStack}
+  set_list: function(listname: string, list: {Item}): nil
   get_lists: function(): { string: {ItemStack} }
   set_lists: function(lists: { string: {Item} }): nil
-  add_item: function(string, stack: Item): ItemStack
-  room_for_item: function(string, stack: Item): boolean
-  contains_item: function(string, stack: Item): boolean
-  remove_item: function(string, stack: Item): ItemStack
+  add_item: function(listname: string, stack: Item): ItemStack
+  room_for_item: function(listname: string, stack: Item): boolean
+  contains_item: function(listname: string, stack: Item): boolean
+  remove_item: function(listname: string, stack: Item): ItemStack
 end
 
 local record ObjectRefGetAnimation
