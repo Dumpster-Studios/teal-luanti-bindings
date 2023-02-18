@@ -28,7 +28,7 @@ global record Node
   param2: number
 end
 
-local enum PointedTypes
+global enum PointedTypes
   "nothing"
   "node"
   "object"
@@ -221,27 +221,27 @@ global record InvRef
   remove_item: function(listname: string, stack: Item): ItemStack
 end
 
-local record ObjectRefGetAnimation
+global record ObjectRefGetAnimation
   frames: Vector2D
   frame_speed: number
   frame_blend: number
   frame_loop: boolean
 end
 
-local record ObjectRefGetAttach
+global record ObjectRefGetAttach
   parent: ObjectRef
   bone: string
   position: Vector3D
   rotation: any
 end
 
-local record ObjectRefGetNametagAttributes
+global record ObjectRefGetNametagAttributes
   text: string
   color: RGBA
   bgcolor: RGBA
 end
 
-local record ObjectRefSetNametagAttributesArgs
+global record ObjectRefSetNametagAttributesArgs
   text: string
   color: ColorSpec
   bgcolor: ColorSpec | boolean
@@ -310,18 +310,18 @@ global enum DrawType
   "mesh"
 end
 
-local enum NodeDefinitionUseTextureAlpha
+global enum NodeDefinitionUseTextureAlpha
   "opaque"
   "clip"
   "blend"
 end
 
-local enum NodeDefinitionParamType
+global enum NodeDefinitionParamType
   "none"
   "light"
 end
 
-local enum NodeDefinitionParamType2
+global enum NodeDefinitionParamType2
   "flowingliquid"
   "wallmounted"
   "facedir"
@@ -338,13 +338,13 @@ local enum NodeDefinitionParamType2
   "none"
 end
 
-local enum TileAnimationDefinitionType
+global enum TileAnimationDefinitionType
   "vertical_frames"
   "sheet_2d"
 end
 
 -- suppress pls
-local record TileAnimationDefinitionVerticalFrames
+global record TileAnimationDefinitionVerticalFrames
   type: TileAnimationDefinitionType -- "vertical_frames"
   aspect_w: number
   aspect_h: number
@@ -352,14 +352,14 @@ local record TileAnimationDefinitionVerticalFrames
 end
 
 -- suppress pls
-local record TileAnimationDefinitionSheet2D
+global record TileAnimationDefinitionSheet2D
   type: TileAnimationDefinitionType -- "sheet_2d"
   frames_w: number
   frames_h: number
   frame_length: number
 end
 
-local record TileAnimationDefinitionUnion
+global record TileAnimationDefinitionUnion
   type: TileAnimationDefinitionType
   aspect_w: number
   aspect_h: number
@@ -370,26 +370,26 @@ local record TileAnimationDefinitionUnion
 end
 
 -- suppress pls
-local record TileDefinitionAnimated
+global record TileDefinitionAnimated
   name: string
   animation: {TileAnimationDefinitionUnion}
 end
 
-local enum TileDefinitionAlignStyle
+global enum TileDefinitionAlignStyle
   "world"
   "node"
   "user"
 end
 
 -- suppress pls
-local record TileDefinitionOther
+global record TileDefinitionOther
   name: string
   backface_culling: boolean
   align_style: TileDefinitionAlignStyle
   scale: number
 end
 
-local record TileDefinitionUnion 
+global record TileDefinitionUnion 
   -- TileDefinitionAnimated
   name: string
   animation: {TileAnimationDefinitionUnion}
@@ -408,18 +408,18 @@ global record DropDefinition
 end
 
 -- suppress pls
-local record NodeDefinitionDrop
+global record NodeDefinitionDrop
   items: {DropDefinition}
   max_items: number
 end
 
-local enum NodeDefinitionLiquidType
+global enum NodeDefinitionLiquidType
   "none"
   "source"
   "flowing"
 end
 
-local record SimpleSoundSpecRecord
+global record SimpleSoundSpecRecord
   name: string
   gain: number
   pitch: number
@@ -427,7 +427,7 @@ end
 
 global type SimpleSoundSpec = SimpleSoundSpecRecord | string
 
-local record NodeDefinitionSounds
+global record NodeDefinitionSounds
   footstep: SimpleSoundSpec | nil
   dug: SimpleSoundSpec | nil
   dug_deep: SimpleSoundSpec | nil
